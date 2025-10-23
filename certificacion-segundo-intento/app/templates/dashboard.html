@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Dashboard - Cinepedia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Bienvenido, {{ usuario.nombre }}</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('usuario.cerrar_sesion') }}">Cerrar sesión</a>
+    <a href="{{ url_for('peliculas.nueva_pelicula') }}">Agregar nueva película</a>
+
+    <h2>Películas</h2>
+    {% if peliculas %}
+      <ul>
+        {% for peli in peliculas %}
+          <li>
+            <a href="{{ url_for('peliculas.ver_pelicula', pelicula_id=peli.id) }}">{{ peli.titulo }}</a>
+            {% if peli.es_creador %}
+              - <a href="{{ url_for('peliculas.editar_pelicula_form', pelicula_id=peli.id) }}">Editar</a>
+              <form action="{{ url_for('peliculas.borrar_pelicula', pelicula_id=peli.id) }}" method="POST" style="display:inline;">
+                <button type="submit">Borrar</button>
+              </form>
+            {% endif %}
+          </li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>No hay películas aún.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

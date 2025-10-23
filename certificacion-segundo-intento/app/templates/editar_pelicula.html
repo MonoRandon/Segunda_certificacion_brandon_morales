@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Editar Película</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Editar Película</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('peliculas.dashboard') }}">Volver al Dashboard</a>
+
+    <form action="{{ url_for('peliculas.actualizar_pelicula', pelicula_id=pelicula.id) }}" method="POST">
+      <input type="text" name="titulo" value="{{ form_data.titulo if form_data else pelicula.titulo }}" required>
+      <input type="text" name="director" value="{{ form_data.director if form_data else pelicula.director }}" required>
+      <input type="date" name="fecha" class="form-control" min="{{ fecha_actual }}" required>
+      <textarea name="sinopsis">{{ form_data.sinopsis if form_data else pelicula.sinopsis }}</textarea>
+      <button type="submit">Actualizar Película</button>
+    </form>
+  </div>
+</body>
+</html>

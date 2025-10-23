@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Comentarios - Cinepedia</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Comentarios</h1>
+    <a href="{{ url_for('peliculas.dashboard') }}">Volver al Dashboard</a>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <form action="{{ url_for('comentario_bp.comentar', pelicula_id=0) }}" method="POST">
+      <label for="pelicula_id">Película:</label>
+      <select name="pelicula_id" required>
+        <option value="">Selecciona una película</option>
+        {% for pelicula in peliculas %}
+          <option value="{{ pelicula.id }}">{{ pelicula.titulo }}</option>
+        {% endfor %}
+      </select>
+
+      <label for="contenido">Comentario:</label>
+      <textarea name="contenido" placeholder="Escribe tu comentario..." required></textarea>
+
+      <button type="submit">Agregar comentario</button>
+    </form>
+
+    <hr>
+
+    <h2>Lista de Comentarios</h2>
+    {% if comentarios %}
+      {% for comentario in comentarios %}
+        <div class="comentario">
+          <h3>{{ comentario.pelicula_titulo }}</h3>
+          <p>{{ comentario.contenido }}</p>
+          <small>Por: {{ comentario.usuario_nombre }} {{ comentario.usuario_apellido }} | Fecha: {{ comentario.fecha_creacion }}</small>
+          <div class="botones">
+            {% if comentario.usuario_id == session.get('user_id') %}
+              <form action="{{ url_for('comentario_bp.eliminar_comentario', comentario_id=comentario.id) }}" method="POST" style="display:inline;">
+                <button type="submit">Eliminar</button>
+              </form>
+            {% endif %}
+          </div>
+        </div>
+      {% endfor %}
+    {% else %}
+      <p>No hay comentarios aún.</p>
+    {% endif %}
+  </div>
+</body>
+</html>

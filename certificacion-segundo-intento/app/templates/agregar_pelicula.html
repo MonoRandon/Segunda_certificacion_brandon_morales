@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <title>Agregar Película</title>
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+  <div class="container">
+    <h1>Agregar Nueva Película</h1>
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="flash {{ category }}">{{ message }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <a href="{{ url_for('peliculas.dashboard') }}">Volver al Dashboard</a>
+
+    <form action="{{ url_for('peliculas.crear_pelicula') }}" method="POST">
+      <input type="text" name="titulo" placeholder="Título" required value="{{ form_data.titulo if form_data else '' }}">
+      <input type="text" name="director" placeholder="Director" required value="{{ form_data.director if form_data else '' }}">
+      <input type="date" name="fecha" required value="{{ form_data.fecha if form_data else '' }}">
+      <textarea name="sinopsis" placeholder="Sinopsis" required>{{ form_data.sinopsis if form_data else '' }}</textarea>
+      <button type="submit">Crear Película</button>
+    </form>
+  </div>
+</body>
+</html>
